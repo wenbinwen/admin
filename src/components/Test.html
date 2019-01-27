@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue官网例子</title>
+  <!--引入vue-->
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <!-- 引入组件库 -->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+
+<body>
+<!--声明式渲染-->
+<div id="app">
+  <p>1.声明式渲染-绑定数据</p>
+  {{message}}
+</div>
+<!-- -->
+<div id="app-2">
+  <p>2.动态绑定-绑定属性/class/style</p>
+  <span v-bind:title="message">
+        鼠标悬停几秒钟查看此处动态绑定的提示信息！
+  </span>
+  <br>
+  <span :title="message">鼠标悬停几秒钟查看此处动态绑定的提示信息！
+  </span>
+  <br>
+  <img :src="url"></img>
+  <div v-html="h"></div>
+  <div v-text="message"></div>
+  <div v-bind:class="{ active: isred }">我真的是黑色的！</div>
+  <div class='red'>我真的是黑色的！</div>
+  <div v-bind:class='{red:isred}' v-bind:style="{color:color,width:divWidth+'px'}">绑定style</div>
+  <button @click="getData()">请求数据</button>
+</div>
+  <!--条件与循环-->
+<div id="app-3">
+  <p>3.条件</p>
+  <p v-if="seen">现在你看到我了</p>
+</div>
+
+<div id="app-4">
+  <p>4.循环</p>
+  <ol>
+    <li v-for="to in todos">
+      {{to.text}}
+    </li>
+    <li v-for="todo in todos">
+      {{ todo.text }}
+    </li>
+  </ol>
+  <br>
+  <p2>4-1.todo</p2>
+  <input type="text" v-model="msg"></input>
+  <button @click="add()">+增加</button>
+  <br>
+  <ul>
+    <li v-for="(item,key) in todo">
+      {{item}}--------<button @click="remove(key)">-删除</button>
+    </li>
+  </ul>
+</div>
+<!--处理用户输入-->
+<div id="app-5">
+  <p>5.双向数据绑定</p>
+  <p>{{ message }}</p>
+  <el-button v-on:click="reverseMessage">逆转消息</el-button>
+  <br>
+  <el-input type="text" v-model="message"></el-input>
+  <button v-on:click="getInput()">获取input值</button>
+  <button @click="setInput()">设置input值</button>
+  <el-input type="text" ref="userinfo">这儿用el-input无法取值？？？？？</el-input>
+
+  <el-button v-on:click="getInputValue()">获取getInputValue值</el-button>
+  <el-button v-on:click="getInputValue()">获取第二个表单里面的数据</el-button>
+  <br>
+  <p></p>
+  <el-button @click="requestData()">请求数据</el-button>
+  <ul>
+    <li v-for="item in list">
+      {{item}}
+    </li>
+  </ul>
+</div>
+
+<div id="app-6">
+  <p>6.处理用户输入</p>
+  <p>{{ message }}</p>
+  <el-input v-model="message"/>
+</div>
+<!--组件化-->
+<div id="app-7">
+  <p>7.组件</p>
+  <ol>
+    <!--
+      现在我们为每个 todo-item 提供 todo 对象
+      todo 对象是变量，即其内容可以是动态的。
+      我们也需要为每个组件提供一个“key”，稍后再
+      作详细解释。
+    -->
+    <todo-item
+      v-for="item in groceryList"
+      v-bind:todo="item"
+      v-bind:key="item.id">
+    </todo-item>
+  </ol>
+</div>
+<!--反转-->
+<div id="example">
+  <p>8.反转</p>
+  <p>Original message: "{{ message }}"</p>
+  <p>Computed reversed message: "{{ reversedMessage }}"</p>
+</div>
+<!--组件-->
+<div id="components-demo">
+  <p>9.组件</p>
+  <button-counter></button-counter>
+  <button-counter></button-counter>
+  <button-counter></button-counter>
+</div>
+<!--指令练习-->
+<div id='app_total'>
+  <p>10.vue常用指令</p>
+  <input type='text' placeholder='edit something '
+         class='edit' autofocus
+         v-model='items.content'
+         @keydown.enter='addTask'
+  >
+  <ul class='task'>
+    <li v-for='(item,index) in list' :key='index'>
+      <input @click='changeState(index)'
+             :checked='item.finished'
+             type='checkbox'>
+      <span :class="{'finish':item.finished}">{{item.content}}</span>
+      <button @click='removeList(index)' class='del'>删除</button>
+    </li>
+  </ul>
+  <p class='empty' v-if='list.length===0'>暂无内容</p>
+</div>
+<!--测试钩子函数-->
+<div id='app_gz' ref='app_gz'>
+  <p>11.测试钩子函数</p>
+  {{name}}
+</div>
+</body>
+<script type="text/javascript">
+  var app = new Vue({
+    el:'#app',
+    data:{
+      message:'Hello Vue!'
+    }
+  })
+  var app2 = new Vue({
+    el: '#app-2',
+    data: {
+      message: '页面加载于 ' + new Date().toLocaleString(),
+      url:'https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=332232803,201478633&fm=173&app=49&f=JPEG?w=640&h=360&s=0F80F80204E184BCC5A9E1D703008060',
+      h:'<h2>我是这个啊</h2>',
+      isred:true,
+      divWidth:200,
+      color:'red'
+    }
+  })
+  var app3 = new Vue({
+    el:'#app-3',
+    data:{
+      seen: true
+    }
+  })
+  var app4 = new Vue({
+    el: '#app-4',
+    data: {
+      todos: [
+        { text: '学习 JavaScript' },
+        { text: '学习 Vue' },
+        { text: '整个牛项目' }
+      ],
+      msg:"",
+      todo:[]
+    },
+    methods:{
+      add(){
+        this.todo.push(this.msg);
+        this.msg="";
+        localStorage.setItem('list',JSON.stringify(this.todo))
+      },
+      remove(key){
+        // alert('已经删除'+key);
+        this.todo.splice(key,1);
+        localStorage.setItem('list',JSON.stringify(this.todo))
+      }
+    },
+    mounted(){
+      var list = JSON.parse(localStorage.getItem('list'));
+      if(list){
+        this.todo = list;
+      }
+    }
+  })
+  var app5 = new Vue({
+    el: '#app-5',
+    data: {
+      message: 'Message',
+      list:[]
+    },
+    methods: {
+      reverseMessage: function () {
+        this.message = this.message.split('').reverse().join('')
+      },
+      getInput(){
+        alert(this.message);
+      },
+      setInput(){
+        this.message = "设置后的message";
+      },
+      getInputValue(){
+        console.log(this.$refs.userinfo.value);
+        alert(this.$refs.userinfo.value);
+      },
+      requestData(){
+        for(var i=0;i<3;i++){
+          this.list.push('我是第'+i+'条数据');
+        }
+      }
+    }
+  })
+  var app6 = new Vue({
+    el: '#app-6',
+    data: {
+      message: 'Hello Vue!'
+    }
+  })
+  Vue.component('todo-item', {
+    props: ['todo'],
+    template: '<li>{{ todo.text }}</li>'
+  })
+
+  var app7 = new Vue({
+    el: '#app-7',
+    data: {
+      groceryList: [
+        { id: 0, text: '蔬菜' },
+        { id: 1, text: '奶酪' },
+        { id: 2, text: '随便其它什么人吃的东西' }
+      ]
+    }
+  })
+  // 我们的数据对象
+  var data = { a: 1 }
+
+  // 该对象被加入到一个 Vue 实例中
+  var vm = new Vue({
+    data: data
+  })
+
+  // 获得这个实例上的属性
+  // 返回源数据中对应的字段
+  vm.a == data.a // => true
+
+  // 设置属性也会影响到原始数据
+  vm.a = 2
+  data.a // => 2
+
+  // ……反之亦然
+  data.a = 3
+  vm.a // => 3
+
+  var vm = new Vue({
+    el: '#example',
+    data: {
+      message: 'Hello啊'
+    },
+    computed: {
+      // 计算属性的 getter
+      reversedMessage: function () {
+        // `this` 指向 vm 实例
+        return this.message.split('').reverse().join('')
+      }
+    }
+  })
+  // 定义一个名为 button-counter 的新组件
+  Vue.component('button-counter', {
+    data: function () {
+      return {
+        count: 0
+      }
+    },
+    template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
+  })
+  var vm_zj = new Vue({ el: '#components-demo' })
+  //指令练习
+
+  var vm = new Vue({
+    el:'#app_total',
+    jjjj:'oooo',
+    data:{
+      //默认数据
+      items:
+        {
+          content: '',//初始化内容为空，不能省略
+          finished: false,//未完成
+          deleted: false//未删除
+        },
+      list:[]
+    },
+    //列表
+    methods:{
+      //es6 的写法
+      addTask(){
+        //将任务存入数组
+        this.list.push(this.items);
+        //重置 items
+        this.items={
+          content: '',//初始化内容为空，不能省略
+          finished: false,//未完成
+          deleted: false//未删除
+        }
+      },
+      // //选中改变状态
+      // changeState(index){
+      //   let curState=this.list[index].finished;
+      //   this.list[index].finished=!curState;
+      // },
+      //删除
+      removeList(index){
+        this.list.splice(index,1);
+      }
+    }
+  })
+  console.log(vm.$options.jjjj);
+  var gz = new Vue({
+    el:'#app_gz',
+    data:{
+      name:'sunseekers'
+    },
+    //创建之前:beforeCreate
+    beforeCreate(){
+      console.log('即将创建');
+      console.log(this.$data);
+      console.log(this.$el);
+    },
+    //创建完毕:created()
+    created(){
+      console.log('即将完毕');
+      console.log(this.$data);
+      console.log(this.$el);
+    },
+    //挂载前，#el挂载到我们指定的节点:beforeMount
+    beforeMount(){
+      console.log('即将挂载');
+      console.log(this.$data);
+      console.log(this.$el);
+    },
+    //挂载完毕：mounted()
+    mounted(){
+      console.log('挂载完毕');
+      console.log(this.$data);
+      console.log(this.$el);
+    },
+    //修改vue实例的data时，vue会自动更新渲染视图，beforeUpdate
+    beforeUpdate(){
+      console.log('=即将更新渲染=');
+      // let name=this.$refs.app.innerHTML;
+      console.log('name:'+name);
+    },
+    beforeDestroy(){
+
+      console.log('销毁之前');
+    },
+    destroyed(){
+      console.log('销毁成功');
+    }
+  })
+</script>
+<style type="text/css">
+  div{
+    width:500px;
+    margin: 30px auto;
+  }
+  .edit{
+    display:block ;
+    line-height: 35px;
+    box-sizing: border-box;
+    padding-left: 20px;
+    border-radius: 4px;
+    border:1px solid #ccc;
+    box-shadow: 0 0 5px #ccc;
+  }
+  .task li{
+    position: relative;
+    padding: 10px 0;
+    border-bottom: 1px solid #efefef;
+    list-style: none;
+  }
+  .task li:last-child{
+    border-bottom: 0;
+  }
+  .finish{
+    text-decoration: line-through;
+    color: #ccc;
+  }
+  .del{
+    background: red;
+    text-decoration: none;
+    position: absolute;
+    right:0;
+    font-size: 12px;
+    border: 0;
+    outline: 0;
+    padding: 2px 5px;
+    border-radius: 5px;
+    color: #fff;
+  }
+  .empty{
+    font-size: 13px;
+    color: #000;
+    text-align: center;
+    padding: 10px 0;
+  }
+</style>
+</html>
